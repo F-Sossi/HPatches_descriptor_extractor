@@ -1,8 +1,11 @@
-#ifndef PARALLEL_SIFT_EXTRACTOR_HPP
-#define PARALLEL_SIFT_EXTRACTOR_HPP
+//
+// Created by frank on 1/19/24.
+//
 
+#ifndef DESCRIPTOR_PARALLELHONCEXTRACTOR_HPP
+#define DESCRIPTOR_PARALLELHONCEXTRACTOR_HPP
+#include "HoNC.h"  // Include your HoNC header
 #include <opencv2/opencv.hpp>
-#include <opencv2/xfeatures2d.hpp> // Include SIFT header
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -11,11 +14,11 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 
-class ParallelSiftExtractor {
+class ParallelHoncExtractor {
 public:
     static void processImage(const std::string& fname, const std::string& seqDirName, const std::string& descr_name) {
         std::cout << "Extracting descriptors for " << fname << std::endl;
-        cv::Mat im = cv::imread(fname, 0);
+        cv::Mat im = cv::imread(fname); // Read image in color
 
         if (im.empty()) {
             std::cerr << "Error: Unable to read image " << fname << std::endl;
@@ -40,9 +43,8 @@ public:
             return;
         }
 
-        auto sift = cv::SIFT::create();
+        HoNC honc; // Initialize HoNC
         std::vector<cv::KeyPoint> keypoints;
-        std::stringstream ss; // Stringstream to accumulate descriptor data
 
         // Collect keypoints
         for (int r = 0; r < im.rows; r += 65) {
@@ -54,9 +56,10 @@ public:
 
         // Compute descriptors for all keypoints
         cv::Mat descriptors;
-        sift->compute(im, keypoints, descriptors);
+        honc.compute(im, keypoints, descriptors);
 
         // Accumulate descriptor data into stringstream
+        std::stringstream ss;
         for (int i = 0; i < descriptors.rows; ++i) {
             for (int j = 0; j < descriptors.cols; ++j) {
                 ss << descriptors.at<float>(i, j);
@@ -69,7 +72,6 @@ public:
         f << ss.str();
         f.close();
     }
-
 
     static void processSequenceDirectory(const std::string& seqDirName, const std::string& descr_name) {
         std::string fullPath = "../data/" + seqDirName; // Assuming data is in ../data/
@@ -116,4 +118,4 @@ public:
     }
 };
 
-#endif // PARALLEL_SIFT_EXTRACTOR_HPP
+#endif //DESCRIPTOR_PARALLELHONCEXTRACTOR_HPP
