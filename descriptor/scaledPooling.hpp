@@ -83,7 +83,7 @@ public:
         }
 
         // Calculating the average of the descriptors
-        //cv::Mat averageDescriptor = sumOfDescriptors / static_cast<float>(scales.size());
+        cv::Mat averageDescriptor = sumOfDescriptors / static_cast<float>(scales.size());
 
 
         // Accumulate descriptor data into stringstream
