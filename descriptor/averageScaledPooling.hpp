@@ -2,8 +2,8 @@
 // Created by frank on 1/22/24.
 //
 
-#ifndef DESCRIPTOR_SCALEDPOOLING_HPP
-#define DESCRIPTOR_SCALEDPOOLING_HPP
+#ifndef DESCRIPTOR_AVERAGESCALEDPOOLING_HPP
+#define DESCRIPTOR_AVERAGESCALEDPOOLING_HPP
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/xfeatures2d.hpp> // Include SIFT header
@@ -71,6 +71,7 @@ public:
             descriptors.push_back(descriptors_scaled);
         }
 
+        TODO: // normalize descriptors (can use L1 or L2 still finding out which is better)
         // normalize descriptors
         for (auto & descriptor : descriptors) {
             cv::normalize(descriptor, descriptor, 1, 0, cv::NORM_L1);
@@ -146,4 +147,4 @@ public:
     }
 };
 
-#endif //DESCRIPTOR_SCALEDPOOLING_HPP
+#endif //DESCRIPTOR_AVERAGESCALEDPOOLING_HPP
