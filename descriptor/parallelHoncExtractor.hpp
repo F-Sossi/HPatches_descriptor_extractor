@@ -5,6 +5,7 @@
 #ifndef DESCRIPTOR_PARALLELHONCEXTRACTOR_HPP
 #define DESCRIPTOR_PARALLELHONCEXTRACTOR_HPP
 #include "HoNC.h"  // Include your HoNC header
+#include "DSPSIFT.h"
 #include <opencv2/opencv.hpp>
 #include <string>
 #include <iostream>
@@ -43,7 +44,7 @@ public:
             return;
         }
 
-        HoNC honc; // Initialize HoNC
+        DSPSIFT dsp; // Initialize HoNC
         std::vector<cv::KeyPoint> keypoints;
 
         // Collect keypoints
@@ -56,7 +57,7 @@ public:
 
         // Compute descriptors for all keypoints
         cv::Mat descriptors;
-        honc.compute(im, keypoints, descriptors);
+        dsp.compute(im, keypoints, descriptors, 3, 1, 65);
 
         // Accumulate descriptor data into stringstream
         std::stringstream ss;

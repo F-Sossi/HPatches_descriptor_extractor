@@ -1,5 +1,9 @@
-#ifndef PARALLEL_SIFT_EXTRACTOR_HPP
-#define PARALLEL_SIFT_EXTRACTOR_HPP
+//
+// Created by frank on 1/22/24.
+//
+
+#ifndef DESCRIPTOR_SCALEDPOOLING_HPP
+#define DESCRIPTOR_SCALEDPOOLING_HPP
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/xfeatures2d.hpp> // Include SIFT header
@@ -11,7 +15,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 
-class ParallelSiftExtractor {
+class scaledpoolingExtractor {
 public:
     static void processImage(const std::string& fname, const std::string& seqDirName, const std::string& descr_name) {
         std::cout << "Extracting descriptors for " << fname << std::endl;
@@ -52,28 +56,41 @@ public:
             }
         }
 
-        // Compute descriptors for all keypoints
-        cv::Mat descriptors;
-        sift->compute(im, keypoints, descriptors);
+        std::vector<float> scales = {0.5f, 1.0f, 1.5f};
+        std::vector<cv::Mat> descriptors;
 
-        // l1 normalization of descriptors
-        cv::normalize(descriptors, descriptors, 1, 0, cv::NORM_L1);
-
-        cv::Mat descriptors_rooted = cv::Mat::zeros(descriptors.rows, descriptors.cols, CV_32FC1);
-
-        // square root normalization of descriptors
-        for (int i = 0; i < descriptors.rows; ++i) {
-            for (int j = 0; j < descriptors.cols; ++j) {
-                descriptors_rooted.at<float>(i, j) = sqrt(descriptors.at<float>(i, j));
+        for (auto scale : scales) {
+            cv::Mat im_scaled;
+            cv::resize(im, im_scaled, cv::Size(), scale, scale);
+            std::vector<cv::KeyPoint> keypoints_scaled;
+            for (auto kp : keypoints) {
+                keypoints_scaled.emplace_back(kp.pt * scale, kp.size * scale);
             }
+            cv::Mat descriptors_scaled;
+            sift->compute(im_scaled, keypoints_scaled, descriptors_scaled);
+            descriptors.push_back(descriptors_scaled);
         }
+
+        // normalize descriptors
+        for (auto & descriptor : descriptors) {
+            cv::normalize(descriptor, descriptor, 1, 0, cv::NORM_L1);
+        }
+
+        // Summing the descriptors from different scales
+        cv::Mat sumOfDescriptors = cv::Mat::zeros(descriptors[0].rows, descriptors[0].cols, CV_32F);
+        for (auto & descriptor : descriptors) {
+            sumOfDescriptors += descriptor;
+        }
+
+        // Calculating the average of the descriptors
+        //cv::Mat averageDescriptor = sumOfDescriptors / static_cast<float>(scales.size());
 
 
         // Accumulate descriptor data into stringstream
-        for (int i = 0; i < descriptors_rooted.rows; ++i) {
-            for (int j = 0; j < descriptors_rooted.cols; ++j) {
-                ss << descriptors_rooted.at<float>(i, j);
-                if (j < descriptors_rooted.cols - 1) ss << ",";
+        for (int i = 0; i < averageDescriptor.rows; ++i) {
+            for (int j = 0; j < averageDescriptor.cols; ++j) {
+                ss << averageDescriptor.at<float>(i, j);
+                if (j < averageDescriptor.cols - 1) ss << ",";
             }
             ss << "\n";
         }
@@ -129,4 +146,4 @@ public:
     }
 };
 
-#endif // PARALLEL_SIFT_EXTRACTOR_HPP
+#endif //DESCRIPTOR_SCALEDPOOLING_HPP
