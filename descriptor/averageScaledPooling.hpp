@@ -14,6 +14,7 @@
 #include <thread>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
+#include "descriptorProcessor.hpp"
 
 class scaledpoolingExtractor {
 public:
@@ -56,42 +57,86 @@ public:
             }
         }
 
-        std::vector<float> scales = {0.5f, 1.0f, 1.5f};
-        std::vector<cv::Mat> descriptors;
 
-        for (auto scale : scales) {
-            cv::Mat im_scaled;
-            cv::resize(im, im_scaled, cv::Size(), scale, scale);
-            std::vector<cv::KeyPoint> keypoints_scaled;
-            for (auto kp : keypoints) {
-                keypoints_scaled.emplace_back(kp.pt * scale, kp.size * scale);
-            }
-            cv::Mat descriptors_scaled;
-            sift->compute(im_scaled, keypoints_scaled, descriptors_scaled);
-            descriptors.push_back(descriptors_scaled);
-        }
+        DescriptorOptions options;
+        options.useScaling = true; // Enable scaling
+        options.scales = {0.5f, 1.0f, 1.5f}; // Set scales for descriptor computation
+        options.normalize = true; // Enable normalization
+        options.normType = cv::NORM_L1; // Use L2 normalization
+        options.useRooting = true; // Enable square root application to descriptors
 
-        TODO: // normalize descriptors (can use L1 or L2 still finding out which is better)
+        cv::Mat descriptors = DescriptorProcessor::processDescriptors(im, keypoints, sift, options);
+
+        // TODO do the scales used make a significant difference in the results?
+//        std::vector<float> scales = {0.5f, 1.0f, 1.5f};
+//        std::vector<cv::Mat> descriptors;
+//
+//        for (auto scale : scales) {
+//            cv::Mat im_scaled;
+//            cv::resize(im, im_scaled, cv::Size(), scale, scale);
+//            std::vector<cv::KeyPoint> keypoints_scaled;
+//            for (auto kp : keypoints) {
+//                keypoints_scaled.emplace_back(kp.pt * scale, kp.size * scale);
+//            }
+//            cv::Mat descriptors_scaled;
+//            sift->compute(im_scaled, keypoints_scaled, descriptors_scaled);
+//            descriptors.push_back(descriptors_scaled);
+//        }
+
+//        // use sift to compute descriptors
+//        cv::Mat descriptors;
+//        sift->compute(im, keypoints, descriptors);
+//
+//        // TODO  normalize descriptors (can use L1 or L2 still finding out which is better)
+//        // normalize descriptors
+//        cv::normalize(descriptors, descriptors, 1, 0, cv::NORM_L1);
+//
+//        // square root normalization of descriptors
+//        for (int i = 0; i < descriptors.rows; ++i) {
+//            for (int j = 0; j < descriptors.cols; ++j) {
+//                descriptors.at<float>(i, j) = sqrt(descriptors.at<float>(i, j));
+//            }
+//        }
+
+
+
+        // TODO  normalize descriptors (can use L1 or L2 still finding out which is better)
         // normalize descriptors
-        for (auto & descriptor : descriptors) {
-            cv::normalize(descriptor, descriptor, 1, 0, cv::NORM_L1);
-        }
+//        for (auto & descriptor : descriptors) {
+//            cv::normalize(descriptor, descriptor, 1, 0, cv::NORM_L1);
+//        }
 
-        // Summing the descriptors from different scales
-        cv::Mat sumOfDescriptors = cv::Mat::zeros(descriptors[0].rows, descriptors[0].cols, CV_32F);
-        for (auto & descriptor : descriptors) {
-            sumOfDescriptors += descriptor;
-        }
+        // square root normalization of descriptors
+//        for (auto & descriptor : descriptors) {
+//            for (int i = 0; i < descriptor.rows; ++i) {
+//                for (int j = 0; j < descriptor.cols; ++j) {
+//                    descriptor.at<float>(i, j) = sqrt(descriptor.at<float>(i, j));
+//                }
+//            }
+//        }
+
+//        // Summing the descriptors from different scales
+//        cv::Mat sumOfDescriptors = cv::Mat::zeros(descriptors[0].rows, descriptors[0].cols, CV_32F);
+//        for (auto & descriptor : descriptors) {
+//            sumOfDescriptors += descriptor;
+//        }
+
+//        // square root normalization of descriptors
+//        for (int i = 0; i < sumOfDescriptors.rows; ++i) {
+//            for (int j = 0; j < sumOfDescriptors.cols; ++j) {
+//                sumOfDescriptors.at<float>(i, j) = sqrt(sumOfDescriptors.at<float>(i, j));
+//            }
+//        }
 
         // Calculating the average of the descriptors
-        cv::Mat averageDescriptor = sumOfDescriptors / static_cast<float>(scales.size());
+        // cv::Mat averageDescriptor = sumOfDescriptors / static_cast<float>(scales.size());
 
 
         // Accumulate descriptor data into stringstream
-        for (int i = 0; i < averageDescriptor.rows; ++i) {
-            for (int j = 0; j < averageDescriptor.cols; ++j) {
-                ss << averageDescriptor.at<float>(i, j);
-                if (j < averageDescriptor.cols - 1) ss << ",";
+        for (int i = 0; i < descriptors.rows; ++i) {
+            for (int j = 0; j < descriptors.cols; ++j) {
+                ss << descriptors.at<float>(i, j);
+                if (j < descriptors.cols - 1) ss << ",";
             }
             ss << "\n";
         }

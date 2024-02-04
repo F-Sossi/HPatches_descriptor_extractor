@@ -15,7 +15,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 
-class ParallelHoncExtractor {
+class parallelHoncExtractor {
 public:
     static void processImage(const std::string& fname, const std::string& seqDirName, const std::string& descr_name) {
         std::cout << "Extracting descriptors for " << fname << std::endl;
@@ -57,7 +57,7 @@ public:
 
         // Compute descriptors for all keypoints
         cv::Mat descriptors;
-        dsp.compute(im, keypoints, descriptors, 3, 1, 65);
+        dsp.compute(im, keypoints, descriptors, 3, 1, 3);
 
         // Accumulate descriptor data into stringstream
         std::stringstream ss;
