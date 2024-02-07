@@ -105,7 +105,6 @@ void hpatchesDescriptorExtractor::processImages(const std::string& descr_name, c
     std::string descrDirectory = "../results/" + descr_name;
     try {
         boost::filesystem::create_directories(descrDirectory);
-        //std::cout << "Created directory: " << descrDirectory << "\n";
     } catch (const boost::filesystem::filesystem_error& e) {
         std::cerr << "Failed to create directory '" << descrDirectory << "': " << e.what() << std::endl;
         return; // Exit on failure
@@ -115,9 +114,15 @@ void hpatchesDescriptorExtractor::processImages(const std::string& descr_name, c
     if (boost::filesystem::is_directory(p)) {
         for (auto& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(p), {})) {
             if (boost::filesystem::is_directory(entry.path())) {
+                // Extract the directory name correctly
+                std::string fullPath = entry.path().string();
                 std::vector<std::string> pathParts;
-                boost::split(pathParts, entry.path().string(), boost::is_any_of("/"));
+                boost::split(pathParts, fullPath, boost::is_any_of("/\\"));
                 std::string seqDirName = pathParts.back();
+                // Handle case where path ends with a slash and last element is empty
+                if (seqDirName.empty() && pathParts.size() > 1) {
+                    seqDirName = pathParts[pathParts.size() - 2];
+                }
                 seqDirectories.push_back(seqDirName);
                 std::cout << "Found sequence directory: " << seqDirName << "\n";
             }
@@ -135,12 +140,13 @@ void hpatchesDescriptorExtractor::processImages(const std::string& descr_name, c
             for (auto& thread : threads) {
                 thread.join();
             }
-            threads.clear(); // Clear the vector of threads after they have completed
+            threads.clear();
         }
 
-        const std::string seqDirPath = p + "/" + seqDirectories[i];
-        threads.emplace_back([&, seqDirPath] {
-            processSequenceDirectory(seqDirPath, descr_name, config);
+        // Use the sequence directory name directly for threading
+        std::string seqDirName = seqDirectories[i];
+        threads.emplace_back([&, seqDirName] {
+            processSequenceDirectory(seqDirName, descr_name, config);
         });
     }
 
