@@ -2,19 +2,14 @@
 
 // Processes image descriptors based on specified options.
 cv::Mat DescriptorProcessor::processDescriptors(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints,
-                                                cv::Ptr<cv::Feature2D> featureExtractor, const DescriptorOptions& options) {
+                                                cv::Ptr<cv::Feature2D> featureExtractor,
+                                                const DescriptorOptions& options) {
     cv::Mat descriptors;
 
-    // Check if domain size pooling is selected and apply scaling accordingly
+    // Pooling strategies
     if (options.poolingStrategy == DOMAIN_SIZE_POOLING) {
         descriptors = computeDescriptorsWithScaling(image, keypoints, featureExtractor, options.scales, options);
-    } else {
-        // Compute descriptors without scaling if domain size pooling is not selected
-        featureExtractor->compute(image, keypoints, descriptors);
-    }
-
-    // Apply other pooling strategies
-    if (options.poolingStrategy == AVERAGE_POOLING) {
+    }else if (options.poolingStrategy == AVERAGE_POOLING) {
         descriptors = averagePooling(image, keypoints, featureExtractor, options.scales, options);
     } else if (options.poolingStrategy == MAX_POOLING) {
         descriptors = maxPooling(image, keypoints, featureExtractor, options.scales, options);
@@ -37,7 +32,8 @@ cv::Mat DescriptorProcessor::processDescriptors(const cv::Mat& image, std::vecto
 cv::Mat DescriptorProcessor::computeDescriptorsWithScaling(const cv::Mat& image,
                                                            const std::vector<cv::KeyPoint>& keypoints,
                                                            cv::Ptr<cv::Feature2D> featureExtractor,
-                                                           const std::vector<float>& scales, const DescriptorOptions& options) {
+                                                           const std::vector<float>& scales,
+                                                           const DescriptorOptions& options) {
     cv::Mat sumOfDescriptors;
     for (auto scale : scales) {
         cv::Mat im_scaled;
@@ -53,12 +49,13 @@ cv::Mat DescriptorProcessor::computeDescriptorsWithScaling(const cv::Mat& image,
             cv::normalize(descriptors_scaled, descriptors_scaled, 1, 0, options.normType);
         }
 
-        if(options.rootingStage == R_AFTER_POOLING) {
+        if(options.rootingStage == R_BEFORE_POOLING) {
             rootDescriptors(descriptors_scaled);
         }
 
         if (sumOfDescriptors.empty()) {
-            sumOfDescriptors = cv::Mat::zeros(descriptors_scaled.rows, descriptors_scaled.cols, descriptors_scaled.type());
+            sumOfDescriptors = cv::Mat::zeros(descriptors_scaled.rows, descriptors_scaled.cols,
+                                              descriptors_scaled.type());
         }
         sumOfDescriptors += descriptors_scaled;
     }
@@ -68,8 +65,6 @@ cv::Mat DescriptorProcessor::computeDescriptorsWithScaling(const cv::Mat& image,
     return sumOfDescriptors;
 }
 
-// Applies average pooling to descriptors
-// Compute descriptors with scaling
 cv::Mat DescriptorProcessor::averagePooling(const cv::Mat &image, const std::vector<cv::KeyPoint> &keypoints,
                                             cv::Ptr<cv::Feature2D> featureExtractor, const std::vector<float> &scales,
                                             const DescriptorOptions& options) {
@@ -88,12 +83,13 @@ cv::Mat DescriptorProcessor::averagePooling(const cv::Mat &image, const std::vec
             cv::normalize(descriptors_scaled, descriptors_scaled, 1, 0, options.normType);
         }
 
-        if(options.rootingStage == R_AFTER_POOLING) {
+        if(options.rootingStage == R_BEFORE_POOLING) {
             rootDescriptors(descriptors_scaled);
         }
 
         if (sumOfDescriptors.empty()) {
-            sumOfDescriptors = cv::Mat::zeros(descriptors_scaled.rows, descriptors_scaled.cols, descriptors_scaled.type());
+            sumOfDescriptors = cv::Mat::zeros(descriptors_scaled.rows, descriptors_scaled.cols,
+                                              descriptors_scaled.type());
         }
         sumOfDescriptors += descriptors_scaled;
     }
@@ -108,7 +104,6 @@ cv::Mat DescriptorProcessor::averagePooling(const cv::Mat &image, const std::vec
 
     return sumOfDescriptors;
 }
-
 
 // Compute descriptors with max pooling
 cv::Mat DescriptorProcessor::maxPooling(const cv::Mat& image, const std::vector<cv::KeyPoint>& keypoints,
@@ -129,7 +124,7 @@ cv::Mat DescriptorProcessor::maxPooling(const cv::Mat& image, const std::vector<
             cv::normalize(descriptors_scaled, descriptors_scaled, 1, 0, options.normType);
         }
 
-        if(options.rootingStage == R_AFTER_POOLING) {
+        if(options.rootingStage == R_BEFORE_POOLING) {
             rootDescriptors(descriptors_scaled);
         }
 
