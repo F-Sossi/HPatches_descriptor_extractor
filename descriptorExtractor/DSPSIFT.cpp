@@ -80,7 +80,7 @@ void DSPSIFT::calcDescriptors(const std::vector<Mat>& gpyr, const std::vector<Ke
 			int correctedIndex = max(0, min(gpyrLength - 1, wantedIndex));
 			/*
 			If the octave we want to enter is less than -1 (negative index in gpyr),
-			set a generic value as the descriptor for that key point, and go to the
+			set a generic value as the descriptorExtractor for that key point, and go to the
 			top of the loop.
 			*/
 			if (wantedIndex < 0)
@@ -101,7 +101,7 @@ void DSPSIFT::calcDescriptors(const std::vector<Mat>& gpyr, const std::vector<Ke
 		desc[cs] = descriptors.clone(); // keep a copy of the current scale
 	}
 
-	//average the descriptor values that resulted from the scales, and image pyramids.
+	//average the descriptorExtractor values that resulted from the scales, and image pyramids.
 	if (NUM_SCALES > 1)
 	{
 		int assignedScales = 0;
@@ -175,7 +175,7 @@ void DSPSIFT::calcDescriptors(const std::vector<Mat>& gpyr, const std::vector<Ke
 	
 			/*
 			If the octave we want to enter is less than -1 (negative index in gpyr),
-			set a generic value as the descriptor for that key point, and go to the
+			set a generic value as the descriptorExtractor for that key point, and go to the
 			/top of the loop.
 			*/
 			if (wantedIndex < 0)
@@ -196,7 +196,7 @@ void DSPSIFT::calcDescriptors(const std::vector<Mat>& gpyr, const std::vector<Ke
 		desc[cs] = descriptors.clone(); // keep a copy of the current scale
 	}
 
-	//average the descriptor values that resulted from pooling across domains
+	//average the descriptorExtractor values that resulted from pooling across domains
 	if (numScales > 1)
 	{
 		int assignedScales = 0;
@@ -323,7 +323,7 @@ void DSPSIFT::operator()(InputArray _image, InputArray _mask, vector<KeyPoint>& 
 		calcDescriptors(gpyr, keypoints, descriptors, nOctaveLayers, firstOctave,
 			numScales, linePoint1, linePoint2);
 		//t = (double)getTickCount() - t;
-		//printf("descriptor extraction time: %g\n", t*1000./tf);
+		//printf("descriptorExtractor extraction time: %g\n", t*1000./tf);
 	}
 }
 
