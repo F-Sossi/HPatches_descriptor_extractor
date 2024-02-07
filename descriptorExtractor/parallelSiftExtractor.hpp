@@ -42,7 +42,7 @@ public:
 
         auto sift = cv::SIFT::create();
         std::vector<cv::KeyPoint> keypoints;
-        std::stringstream ss; // Stringstream to accumulate descriptor data
+        std::stringstream ss; // Stringstream to accumulate descriptorExtractor data
 
         // Collect keypoints
         for (int r = 0; r < im.rows; r += 65) {
@@ -69,7 +69,7 @@ public:
         }
 
 
-        // Accumulate descriptor data into stringstream
+        // Accumulate descriptorExtractor data into stringstream
         for (int i = 0; i < descriptors_rooted.rows; ++i) {
             for (int j = 0; j < descriptors_rooted.cols; ++j) {
                 ss << descriptors_rooted.at<float>(i, j);

@@ -59,7 +59,7 @@ public:
         cv::Mat descriptors;
         dsp.compute(im, keypoints, descriptors, 3, 1, 3);
 
-        // Accumulate descriptor data into stringstream
+        // Accumulate descriptorExtractor data into stringstream
         std::stringstream ss;
         for (int i = 0; i < descriptors.rows; ++i) {
             for (int j = 0; j < descriptors.cols; ++j) {

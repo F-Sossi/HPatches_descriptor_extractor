@@ -93,11 +93,11 @@ public:
                             std::vector<cv::KeyPoint> keypoints;
                             keypoints.emplace_back(center, 65.0f); // Size of the patch as keypoint size
 
-                            // Compute SIFT descriptor for this keypoint
+                            // Compute SIFT descriptorExtractor for this keypoint
                             cv::Mat descriptors;
                             sift->compute(im, keypoints, descriptors);
 
-                            // Write the descriptor to the file
+                            // Write the descriptorExtractor to the file
                             for (int i = 0; i < descriptors.rows; ++i) {
                                 for (int j = 0; j < descriptors.cols; ++j) {
                                     f << descriptors.at<float>(i, j);
