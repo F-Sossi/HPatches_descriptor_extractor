@@ -44,19 +44,19 @@
     //########################################################
 
     // hpatchesDescriptorExtraction type: SIFT
-    auto sift = cv::SIFT::create();
+    auto descriptor = cv::xfeatures2d::SURF::create();
 
-    // Pooling and normalization options
-//    DescriptorOptions options;
-//    options.poolingStrategy = DOMAIN_SIZE_POOLING; // Enable scaling
-//    options.normalizationStage = AFTER_POOLING; // Enable normalization after pooling
-//    options.scales = {0.5f, 1.0f, 2.0f}; // Set scales for descriptorExtractor computation
-//    options.normalize = true; // Enable normalization
-//    options.normType = cv::NORM_L1; // Set normalization type
-//    options.rootingStage = R_AFTER_POOLING; // Enable rooting after pooling
+    // Pooling and normalization options use experimentConfig Class to set
+    //    DescriptorOptions options;
+    //    options.poolingStrategy = DOMAIN_SIZE_POOLING; // Enable scaling
+    //    options.normalizationStage = AFTER_POOLING; // Enable normalization after pooling
+    //    options.scales = {0.5f, 1.0f, 2.0f}; // Set scales for descriptorExtractor computation
+    //    options.normalize = true; // Enable normalization
+    //    options.normType = cv::NORM_L1; // Set normalization type
+    //    options.rootingStage = R_AFTER_POOLING; // Enable rooting after pooling
 
     // Process descriptors
-    cv::Mat descriptors = DescriptorProcessor::processDescriptors(im, keypoints, sift, config.descriptorOptions);
+    cv::Mat descriptors = DescriptorProcessor::processDescriptors(im, keypoints, descriptor, config.descriptorOptions);
 
     // No modifications needed beyond this point
     //########################################################

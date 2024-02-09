@@ -13,6 +13,8 @@ cv::Mat DescriptorProcessor::processDescriptors(const cv::Mat& image, std::vecto
         descriptors = averagePooling(image, keypoints, featureExtractor, options.scales, options);
     } else if (options.poolingStrategy == MAX_POOLING) {
         descriptors = maxPooling(image, keypoints, featureExtractor, options.scales, options);
+    }else {
+        featureExtractor->compute(image, keypoints, descriptors);
     }
 
     // Apply normalization after pooling

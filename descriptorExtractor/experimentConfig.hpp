@@ -1,7 +1,9 @@
 #ifndef EXPERIMENT_CONFIG_HPP
 #define EXPERIMENT_CONFIG_HPP
 
-#include "descriptorProcessor.hpp" // Make sure this includes the DescriptorOptions definition
+#include <utility>
+
+#include "descriptorProcessor.hpp" // Header with options structure
 
 /**
  * @struct ExperimentConfig
@@ -17,7 +19,7 @@ struct ExperimentConfig {
     ExperimentConfig() = default;
 
     // Initialize with specific descriptor options
-    ExperimentConfig(const DescriptorOptions& options) : descriptorOptions(options) {}
+    explicit ExperimentConfig(DescriptorOptions  options) : descriptorOptions(std::move(options)) {}
 
     // Helper method to set descriptor options directly
     void setDescriptorOptions(const DescriptorOptions& options) {
