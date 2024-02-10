@@ -44,7 +44,7 @@
     //########################################################
 
     // hpatchesDescriptorExtraction type: SIFT
-    auto descriptor = cv::xfeatures2d::SURF::create();
+    auto descriptor = cv::SIFT::create();
 
     // Pooling and normalization options use experimentConfig Class to set
     //    DescriptorOptions options;
