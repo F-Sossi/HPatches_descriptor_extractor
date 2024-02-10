@@ -70,9 +70,9 @@ private:
      * @param scales The scales at which to compute the descriptors.
      * @return A cv::Mat containing descriptors computed at multiple scales.
      */
-    static cv::Mat computeDescriptorsWithScaling(const cv::Mat& image, const std::vector<cv::KeyPoint>& keypoints,
-                                                 cv::Ptr<cv::Feature2D> featureExtractor,
-                                                 const std::vector<float>& scales, const DescriptorOptions& options);
+    static cv::Mat sumPooling(const cv::Mat& image, const std::vector<cv::KeyPoint>& keypoints,
+                              cv::Ptr<cv::Feature2D> featureExtractor,
+                              const std::vector<float>& scales, const DescriptorOptions& options);
     static cv::Mat averagePooling(const cv::Mat& image, const std::vector<cv::KeyPoint>& keypoints,
                                   cv::Ptr<cv::Feature2D> featureExtractor, const std::vector<float>& scales,
                                   const DescriptorOptions& options);

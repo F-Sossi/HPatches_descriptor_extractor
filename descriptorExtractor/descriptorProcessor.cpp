@@ -8,7 +8,7 @@ cv::Mat DescriptorProcessor::processDescriptors(const cv::Mat& image, std::vecto
 
     // Pooling strategies
     if (options.poolingStrategy == DOMAIN_SIZE_POOLING) {
-        descriptors = computeDescriptorsWithScaling(image, keypoints, featureExtractor, options.scales, options);
+        descriptors = sumPooling(image, keypoints, featureExtractor, options.scales, options);
     }else if (options.poolingStrategy == AVERAGE_POOLING) {
         descriptors = averagePooling(image, keypoints, featureExtractor, options.scales, options);
     } else if (options.poolingStrategy == MAX_POOLING) {
@@ -31,15 +31,15 @@ cv::Mat DescriptorProcessor::processDescriptors(const cv::Mat& image, std::vecto
 }
 
 // Compute descriptors with scaling
-cv::Mat DescriptorProcessor::computeDescriptorsWithScaling(const cv::Mat& image,
-                                                           const std::vector<cv::KeyPoint>& keypoints,
-                                                           cv::Ptr<cv::Feature2D> featureExtractor,
-                                                           const std::vector<float>& scales,
-                                                           const DescriptorOptions& options) {
+cv::Mat DescriptorProcessor::sumPooling(const cv::Mat& image,
+                                        const std::vector<cv::KeyPoint>& keypoints,
+                                        cv::Ptr<cv::Feature2D> featureExtractor,
+                                        const std::vector<float>& scales,
+                                        const DescriptorOptions& options) {
     cv::Mat sumOfDescriptors;
     for (auto scale : scales) {
         cv::Mat im_scaled;
-        cv::resize(image, im_scaled, cv::Size(), scale, scale);
+        cv::resize(image, im_scaled, cv::Size(), scale, scale, cv::INTER_LINEAR);
         std::vector<cv::KeyPoint> keypoints_scaled;
         for (auto kp : keypoints) {
             keypoints_scaled.emplace_back(kp.pt * scale, kp.size * scale);
@@ -73,7 +73,7 @@ cv::Mat DescriptorProcessor::averagePooling(const cv::Mat &image, const std::vec
     cv::Mat sumOfDescriptors;
     for (auto scale : scales) {
         cv::Mat im_scaled;
-        cv::resize(image, im_scaled, cv::Size(), scale, scale);
+        cv::resize(image, im_scaled, cv::Size(), scale, scale, cv::INTER_LINEAR);
         std::vector<cv::KeyPoint> keypoints_scaled;
         for (auto kp : keypoints) {
             keypoints_scaled.emplace_back(kp.pt * scale, kp.size * scale);
@@ -114,7 +114,7 @@ cv::Mat DescriptorProcessor::maxPooling(const cv::Mat& image, const std::vector<
     cv::Mat maxOfDescriptors;
     for (auto scale : scales) {
         cv::Mat im_scaled;
-        cv::resize(image, im_scaled, cv::Size(), scale, scale);
+        cv::resize(image, im_scaled, cv::Size(), scale, scale, cv::INTER_LINEAR);
         std::vector<cv::KeyPoint> keypoints_scaled;
         for (auto kp : keypoints) {
             keypoints_scaled.emplace_back(kp.pt * scale, kp.size * scale);
