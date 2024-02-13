@@ -39,7 +39,7 @@ cv::Mat DescriptorProcessor::sumPooling(const cv::Mat& image,
     cv::Mat sumOfDescriptors;
     for (auto scale : scales) {
         cv::Mat im_scaled;
-        cv::resize(image, im_scaled, cv::Size(), scale, scale, cv::INTER_LINEAR);
+        cv::resize(image, im_scaled, cv::Size(), scale, scale);
         std::vector<cv::KeyPoint> keypoints_scaled;
         for (auto kp : keypoints) {
             keypoints_scaled.emplace_back(kp.pt * scale, kp.size * scale);
@@ -73,7 +73,7 @@ cv::Mat DescriptorProcessor::averagePooling(const cv::Mat &image, const std::vec
     cv::Mat sumOfDescriptors;
     for (auto scale : scales) {
         cv::Mat im_scaled;
-        cv::resize(image, im_scaled, cv::Size(), scale, scale, cv::INTER_LINEAR);
+        cv::resize(image, im_scaled, cv::Size(), scale, scale);
         std::vector<cv::KeyPoint> keypoints_scaled;
         for (auto kp : keypoints) {
             keypoints_scaled.emplace_back(kp.pt * scale, kp.size * scale);
@@ -114,7 +114,7 @@ cv::Mat DescriptorProcessor::maxPooling(const cv::Mat& image, const std::vector<
     cv::Mat maxOfDescriptors;
     for (auto scale : scales) {
         cv::Mat im_scaled;
-        cv::resize(image, im_scaled, cv::Size(), scale, scale, cv::INTER_LINEAR);
+        cv::resize(image, im_scaled, cv::Size(), scale, scale);
         std::vector<cv::KeyPoint> keypoints_scaled;
         for (auto kp : keypoints) {
             keypoints_scaled.emplace_back(kp.pt * scale, kp.size * scale);

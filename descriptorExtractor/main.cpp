@@ -45,7 +45,7 @@ int main() {
     // Define all possible options
     std::vector<PoolingStrategy> poolingStrategies = {AVERAGE_POOLING, MAX_POOLING, DOMAIN_SIZE_POOLING};
     std::vector<NormalizationStage> normalizationStages = {BEFORE_POOLING, AFTER_POOLING, NO_NORMALIZATION};
-    std::vector<RootingStage> rootingStages = {R_BEFORE_POOLING, R_AFTER_POOLING};
+    std::vector<RootingStage> rootingStages = {R_BEFORE_POOLING};
     std::vector<int> normTypes = {cv::NORM_L1}; // Add more norm types if needed
 
     std::string directoryPath = "../data";
@@ -58,7 +58,7 @@ int main() {
                     // Configure the descriptor options
                     DescriptorOptions options;
                     options.poolingStrategy = pooling;
-                    options.scales = {1.0f, 1.5f, 2.0, 2.5}; // Example scales, modify as needed
+                    options.scales = {1.0f, 1.5f, 2.0}; // Example scales, modify as needed
                     options.normType = normType;
                     options.normalizationStage = normalization;
                     options.rootingStage = rooting;
@@ -67,7 +67,7 @@ int main() {
                     ExperimentConfig config(options);
 
                     // Create a descriptive experiment name
-                    std::string descriptorName = "Sift4up" + poolingStrategyToString(pooling) +
+                    std::string descriptorName = "Sift3up" + poolingStrategyToString(pooling) +
                                                  normalizationStageToString(normalization) +
                                                  rootingStageToString(rooting) +
                                                  normTypeToString(normType);
