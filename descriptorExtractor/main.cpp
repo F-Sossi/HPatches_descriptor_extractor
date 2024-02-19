@@ -58,7 +58,7 @@ int main() {
                     // Configure the descriptor options
                     DescriptorOptions options;
                     options.poolingStrategy = pooling;
-                    options.scales = {1.0f, 1.5f, 2.0}; // Example scales, modify as needed
+                    options.scales = {1.0f, 0.5f, 0.25f}; // Example scales, modify as needed
                     options.normType = normType;
                     options.normalizationStage = normalization;
                     options.rootingStage = rooting;
@@ -67,7 +67,7 @@ int main() {
                     ExperimentConfig config(options);
 
                     // Create a descriptive experiment name
-                    std::string descriptorName = "Sift3up" + poolingStrategyToString(pooling) +
+                    std::string descriptorName = "Sift3dn" + poolingStrategyToString(pooling) +
                                                  normalizationStageToString(normalization) +
                                                  rootingStageToString(rooting) +
                                                  normTypeToString(normType);
