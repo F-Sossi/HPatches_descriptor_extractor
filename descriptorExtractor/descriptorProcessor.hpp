@@ -24,7 +24,8 @@ enum NormalizationStage {
 // enum for rooting stage
 enum RootingStage {
     R_BEFORE_POOLING,
-    R_AFTER_POOLING
+    R_AFTER_POOLING,
+    R_NONE
 };
 
 struct DescriptorOptions {

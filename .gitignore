@@ -1,5 +1,9 @@
 # ignore the data folder
 /data
 
+# ignore the color_data folder
+/color_data
+
 # ignore the results folder
 /results
+/color_data/
