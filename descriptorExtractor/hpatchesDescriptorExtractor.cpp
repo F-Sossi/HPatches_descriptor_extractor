@@ -58,6 +58,25 @@
     // With the descriptorExtractor and options you would like to test
     //########################################################
 
+    // DONE: Try vanilla SIFT here and test -> FAILED
+//    //#############################################################
+//    if (im.channels() == 3) {
+//        // Image is in BGR format, convert it to grayscale
+//        cv::cvtColor(im, im, cv::COLOR_BGR2GRAY);
+//    } else if (im.channels() == 4) {
+//        // For example, convert BGRA to grayscale
+//        cv::cvtColor(im, im, cv::COLOR_BGRA2GRAY);
+//    }
+//
+//    // init
+//    Ptr<VanillaSIFT> vanillaSiftExtractor = VanillaSIFT::create();
+//
+//    cv::Mat descriptors;
+//
+//    vanillaSiftExtractor->compute(im, keypoints, descriptors);
+//    //############################################################
+
+
     // Create the descriptor extractor based on the config
     auto descriptorExtractor = config.createDescriptorExtractor();
 
@@ -169,7 +188,6 @@ void hpatchesDescriptorExtractor::processImages(const std::string& descr_name, c
         std::cout << "Single-threaded processing completed.\n";
     }
 
-    std::cout << "Single-threaded processing completed.\n";
 }
 
 // TODO erase old code

@@ -34,7 +34,8 @@ enum RootingStage {
 enum DescriptorType {
     DESCRIPTOR_SIFT,
     DESCRIPTOR_ORB,
-    DESCRIPTOR_SURF
+    DESCRIPTOR_SURF,
+    DESCRIPTOR_vSIFT
     // Add more descriptor types as needed
 };
 

@@ -48,6 +48,7 @@ std::string descriptorTypeToString(DescriptorType type) {
     switch (type) {
         case DESCRIPTOR_SIFT: return "SIFT";
         case DESCRIPTOR_ORB: return "ORB";
+        case DESCRIPTOR_SURF: return "SURF";
             // Add more cases as needed
         default: return "Unknown";
     }
@@ -64,9 +65,9 @@ std::string imageTypeToString(ImageType imageType) {
 
 int main() {
     // Define all possible options
-    std::vector<PoolingStrategy> poolingStrategies = {NONE, AVERAGE_POOLING, MAX_POOLING, DOMAIN_SIZE_POOLING, STACKING};
+    std::vector<PoolingStrategy> poolingStrategies = {NONE, AVERAGE_POOLING, MAX_POOLING, DOMAIN_SIZE_POOLING};
     std::vector<NormalizationStage> normalizationStages = {NO_NORMALIZATION, AFTER_POOLING};
-    std::vector<RootingStage> rootingStages = {R_NONE, R_AFTER_POOLING};
+    std::vector<RootingStage> rootingStages = {R_NONE, R_BEFORE_POOLING};
     std::vector<int> normTypes = {cv::NORM_L1}; // Add more norm types if needed
     std::vector<DescriptorType> descriptorTypes = {DESCRIPTOR_SIFT}; // Example descriptor types
 

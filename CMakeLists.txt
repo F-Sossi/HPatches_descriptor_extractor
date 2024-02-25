@@ -20,6 +20,7 @@ add_executable(descriptorExtractor
         descriptorExtractor/hpatchesDescriptorExtractor.cpp
         descriptorExtractor/descriptorProcessor.cpp
         descriptorExtractor/experimentConfig.hpp
+        keypoints/VanillaSIFT.cpp
 #        keypoints/CHoNI.cpp
 #        keypoints/CSIFT.cpp
 #        keypoints/CSPIN.cpp
