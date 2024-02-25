@@ -60,6 +60,8 @@ cv::Mat DescriptorProcessor::processDescriptors(const cv::Mat& image, std::vecto
         descriptors = averagePooling(image, keypoints, featureExtractor, options.scales, options);
     } else if (options.poolingStrategy == MAX_POOLING) {
         descriptors = maxPooling(image, keypoints, featureExtractor, options.scales, options);
+    } else if (options.poolingStrategy == STACKING) {
+        descriptors = stackDescriptors(image, keypoints, featureExtractor, options.scales, options);
     }else {
         featureExtractor->compute(image, keypoints, descriptors);
     }
@@ -188,6 +190,43 @@ cv::Mat DescriptorProcessor::maxPooling(const cv::Mat& image, const std::vector<
 
     return maxOfDescriptors;
 }
+
+cv::Mat DescriptorProcessor::stackDescriptors(const cv::Mat& image,
+                                              const std::vector<cv::KeyPoint>& keypoints,
+                                              const cv::Ptr<cv::Feature2D>& featureExtractor,
+                                              const std::vector<float>& scales,
+                                              const DescriptorOptions& options) {
+    cv::Mat stackedDescriptors;
+    for (auto scale : scales) {
+        cv::Mat im_scaled;
+        cv::resize(image, im_scaled, cv::Size(), scale, scale);
+        std::vector<cv::KeyPoint> keypoints_scaled;
+        for (auto kp : keypoints) {
+            keypoints_scaled.emplace_back(kp.pt * scale, kp.size * scale);
+        }
+        cv::Mat descriptors_scaled;
+        featureExtractor->compute(im_scaled, keypoints_scaled, descriptors_scaled);
+
+        if (options.normalizationStage == BEFORE_POOLING) {
+            cv::normalize(descriptors_scaled, descriptors_scaled, 1, 0, options.normType);
+        }
+
+        if (options.rootingStage == R_BEFORE_POOLING) {
+            rootDescriptors(descriptors_scaled);
+        }
+
+        if (stackedDescriptors.empty()) {
+            stackedDescriptors = descriptors_scaled;
+        } else {
+            cv::vconcat(stackedDescriptors, descriptors_scaled, stackedDescriptors);
+        }
+    }
+
+    // Optionally, you can normalize the stackedDescriptors here again
+
+    return stackedDescriptors;
+}
+
 
 
     // Method to apply square root to descriptors

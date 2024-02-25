@@ -13,6 +13,7 @@ std::string poolingStrategyToString(PoolingStrategy strategy) {
         case AVERAGE_POOLING: return "Avg";
         case MAX_POOLING: return "Max";
         case DOMAIN_SIZE_POOLING: return "Dom";
+        case STACKING: return "Stack";
         default: return "UnkPool";
     }
 }
@@ -63,7 +64,7 @@ std::string imageTypeToString(ImageType imageType) {
 
 int main() {
     // Define all possible options
-    std::vector<PoolingStrategy> poolingStrategies = {NONE, AVERAGE_POOLING, MAX_POOLING, DOMAIN_SIZE_POOLING};
+    std::vector<PoolingStrategy> poolingStrategies = {NONE, AVERAGE_POOLING, MAX_POOLING, DOMAIN_SIZE_POOLING, STACKING};
     std::vector<NormalizationStage> normalizationStages = {NO_NORMALIZATION, AFTER_POOLING};
     std::vector<RootingStage> rootingStages = {R_NONE, R_AFTER_POOLING};
     std::vector<int> normTypes = {cv::NORM_L1}; // Add more norm types if needed

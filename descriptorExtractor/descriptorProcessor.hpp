@@ -13,7 +13,8 @@ enum PoolingStrategy {
     NONE, // No pooling
     AVERAGE_POOLING,
     MAX_POOLING,
-    DOMAIN_SIZE_POOLING // Domain size pooling is selected here
+    DOMAIN_SIZE_POOLING,
+    STACKING// Domain size pooling is selected here
 };
 
 // Enum for when to apply normalization
@@ -111,6 +112,10 @@ private:
      * @param descriptors The descriptorExtractor matrix to be rooted.
      */
     static void rootDescriptors(cv::Mat& descriptors);
+
+    static cv::Mat stackDescriptors(const cv::Mat &image, const std::vector<cv::KeyPoint> &keypoints,
+                             const cv::Ptr<cv::Feature2D> &featureExtractor, const std::vector<float> &scales,
+                             const DescriptorOptions &options);
 };
 
 
