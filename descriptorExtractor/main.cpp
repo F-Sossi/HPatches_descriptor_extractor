@@ -65,11 +65,11 @@ std::string imageTypeToString(ImageType imageType) {
 
 int main() {
     // Define all possible options
-    std::vector<PoolingStrategy> poolingStrategies = {NONE, AVERAGE_POOLING, MAX_POOLING, DOMAIN_SIZE_POOLING};
-    std::vector<NormalizationStage> normalizationStages = {NO_NORMALIZATION, AFTER_POOLING};
-    std::vector<RootingStage> rootingStages = {R_NONE, R_BEFORE_POOLING};
-    std::vector<int> normTypes = {cv::NORM_L1}; // Add more norm types if needed
-    std::vector<DescriptorType> descriptorTypes = {DESCRIPTOR_SIFT}; // Example descriptor types
+    std::vector<PoolingStrategy> poolingStrategies = {NONE, AVERAGE_POOLING, MAX_POOLING, DOMAIN_SIZE_POOLING, STACKING};
+    std::vector<NormalizationStage> normalizationStages = {NO_NORMALIZATION, BEFORE_POOLING, AFTER_POOLING};
+    std::vector<RootingStage> rootingStages = {R_NONE, R_BEFORE_POOLING}; // R_AFTER_POOLING was worse in all cases
+    std::vector<int> normTypes = {cv::NORM_L1}; // L@ Norm was worse in all cases
+    std::vector<DescriptorType> descriptorTypes = {DESCRIPTOR_SURF}; // Example descriptor types
 
     // Data is the original data set and color_data is the same data set in color
     std::string directoryPath = "../data";

@@ -54,10 +54,13 @@ struct ExperimentConfig {
         switch(descriptorType) {
             case DESCRIPTOR_SIFT:
                 return cv::SIFT::create();
-            case DESCRIPTOR_ORB:
-                return cv::ORB::create();
+            case DESCRIPTOR_SURF:
+                return cv::xfeatures2d::SURF::create();
             default:
-                return cv::SIFT::create(); // Default case
+                // Print error message and return SIFT as default
+                std::cerr << "Unknown descriptor type, using SIFT as default" << std::endl;
+                exit(1);
+                //return cv::SIFT::create(); // Default case
         }
     }
 };

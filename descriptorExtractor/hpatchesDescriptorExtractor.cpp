@@ -1,5 +1,7 @@
 #include "hpatchesDescriptorExtractor.hpp"
 
+ float PATCH_SIZE = 65.0f; // original h patches patch size 65 color 66 don't know why they did not use even number
+
  void hpatchesDescriptorExtractor::processImage(const std::string& fname, const std::string& seqDirName,
                                                 const std::string& descr_name, const ExperimentConfig& config){
     std::cout << "Extracting descriptors for " << fname << std::endl;
@@ -37,12 +39,20 @@
     std::vector<cv::KeyPoint> keypoints;
 
     // Collect keypoints centered on each patch
-    for (int r = 0; r < im.rows; r += 65) {
-        for (int c = 0; c < im.cols; c += 65) {
-            cv::Point2f center(c + 32.5f, r + 32.5f);
-            keypoints.emplace_back(center, 65.0f);
+    for (int r = 0; r < im.rows; r += int(PATCH_SIZE)) {
+        for (int c = 0; c < im.cols; c += int(PATCH_SIZE)) {
+            cv::Point2f center(c + PATCH_SIZE/2, r + PATCH_SIZE/2);
+            keypoints.emplace_back(center, PATCH_SIZE);
         }
     }
+
+//    // Visual check of the keypoints
+//    cv::Mat imageWithKeypoints;
+//    drawKeypoints(im, keypoints, imageWithKeypoints, Scalar::all(-1), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+//    imshow("Keypoints", imageWithKeypoints);
+//    waitKey(0);
+
+
 
 //     // Collect keypoints centered on each patch
 //     for (int r = 0; r < im.rows; r += 65) {
@@ -86,6 +96,42 @@
     // No modifications needed beyond this point
     // ########################################################
 
+     // filter fo Nan values and set them to 0
+     int nanCount = 0;
+     for (int i = 0; i < descriptors.rows; ++i) {
+         for (int j = 0; j < descriptors.cols; ++j) {
+             if (std::isnan(descriptors.at<float>(i, j))) {
+                 descriptors.at<float>(i, j) = 0;
+                    nanCount++;
+             }
+         }
+     }
+
+    if (nanCount > 0) {
+        std::cout << "Found " << nanCount << " NaN values in the descriptors.\n";
+    }
+
+    // Check for all zero descriptors
+    int zeroCount = 0;
+    for (int i = 0; i < descriptors.rows; ++i) {
+        bool allZero = true;
+        for (int j = 0; j < descriptors.cols; ++j) {
+            if (descriptors.at<float>(i, j) != 0) {
+                allZero = false;
+                break;
+            }
+        }
+        if (allZero) {
+            zeroCount++;
+            // print fname of the image
+            std::cout << "All zero descriptor found in " << fname << std::endl;
+        }
+    }
+
+    if (zeroCount > 0) {
+        std::cout << "Found " << zeroCount << " all-zero descriptors.\n";
+    }
+
     // Accumulate descriptorExtractor data into string stream
     std::stringstream ss;
     for (int i = 0; i < descriptors.rows; ++i) {
@@ -95,6 +141,8 @@
         }
         ss << "\n";
     }
+
+
 
     // Write the accumulated data to the file
     f << ss.str();

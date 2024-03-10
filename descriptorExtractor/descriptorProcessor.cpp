@@ -6,7 +6,7 @@ cv::Mat DescriptorProcessor::processDescriptors(const cv::Mat& image, std::vecto
                                                 const DescriptorOptions& options) {
 
     // if the descriptor is a grayscale type and the image is not, convert it to grayscale
-    if(options.descriptorColorSpace == D_COLOR) {
+    if(options.imageType == COLOR && options.descriptorColorSpace == D_BW) {
         if (image.channels() == 3) {
             // Image is in BGR format, convert it to grayscale
             cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
