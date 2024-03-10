@@ -18,53 +18,53 @@ cv::Mat DescriptorProcessor::processDescriptors(const cv::Mat& image, std::vecto
 
     cv::Mat descriptors;
 
-// TODO: remove if we decide to not use custom descriptor types
-//
-//    if (options.descriptorType == DESCRIPTOR_VSIFT) {
-//
-//        // allocate a pointer to a VanillaSIFT object
-//        Ptr<VanillaSIFT> vanillaSiftExtractor = VanillaSIFT::create();
-//
-//        if (vanillaSiftExtractor) {
-//            // Successful cast to VanillaSIFT, proceed with specific operations
-//            if (options.poolingStrategy == DOMAIN_SIZE_POOLING) {
-//                descriptors = sumPooling(image, keypoints, vanillaSiftExtractor, options.scales, options);
-//            } else if (options.poolingStrategy == AVERAGE_POOLING) {
-//                descriptors = averagePooling(image, keypoints, vanillaSiftExtractor, options.scales, options);
-//            } else if (options.poolingStrategy == MAX_POOLING) {
-//                descriptors = maxPooling(image, keypoints, vanillaSiftExtractor, options.scales, options);
-//            } else {
-//                vanillaSiftExtractor->compute(image, keypoints, descriptors);
-//            }
-//        } else {
-//            throw std::runtime_error("Feature extractor is not a VanillaSIFT instance.");
-//        }
-//    } else {
-//        // Fallback or generic handling using featureExtractor as a generic cv::Feature2D
-//        // This path will use the base class's compute method if the specific cast fails.
-//        if (options.poolingStrategy == DOMAIN_SIZE_POOLING) {
-//            descriptors = sumPooling(image, keypoints, featureExtractor, options.scales, options);
-//        } else if (options.poolingStrategy == AVERAGE_POOLING) {
-//            descriptors = averagePooling(image, keypoints, featureExtractor, options.scales, options);
-//        } else if (options.poolingStrategy == MAX_POOLING) {
-//            descriptors = maxPooling(image, keypoints, featureExtractor, options.scales, options);
-//        } else {
-//            featureExtractor->compute(image, keypoints, descriptors);
-//        }
-//    }
+    // TODO: remove if we decide to not use custom descriptor types
 
-    // Pooling strategies
-    if (options.poolingStrategy == DOMAIN_SIZE_POOLING) {
-        descriptors = sumPooling(image, keypoints, featureExtractor, options.scales, options);
-    }else if (options.poolingStrategy == AVERAGE_POOLING) {
-        descriptors = averagePooling(image, keypoints, featureExtractor, options.scales, options);
-    } else if (options.poolingStrategy == MAX_POOLING) {
-        descriptors = maxPooling(image, keypoints, featureExtractor, options.scales, options);
-    } else if (options.poolingStrategy == STACKING) {
-        descriptors = stackDescriptors(image, keypoints, featureExtractor, options.scales, options);
-    }else {
-        featureExtractor->compute(image, keypoints, descriptors);
+    if (options.descriptorType == DESCRIPTOR_vSIFT) {
+
+        // allocate a pointer to a VanillaSIFT object
+        Ptr<VanillaSIFT> vanillaSiftExtractor = VanillaSIFT::create();
+
+        if (vanillaSiftExtractor) {
+            // Successful cast to VanillaSIFT, proceed with specific operations
+            if (options.poolingStrategy == DOMAIN_SIZE_POOLING) {
+                descriptors = sumPooling(image, keypoints, vanillaSiftExtractor, options.scales, options);
+            } else if (options.poolingStrategy == AVERAGE_POOLING) {
+                descriptors = averagePooling(image, keypoints, vanillaSiftExtractor, options.scales, options);
+            } else if (options.poolingStrategy == MAX_POOLING) {
+                descriptors = maxPooling(image, keypoints, vanillaSiftExtractor, options.scales, options);
+            } else {
+                (*vanillaSiftExtractor)(image, noArray(), keypoints, noArray(), true);
+            }
+        } else {
+            throw std::runtime_error("Feature extractor is not a VanillaSIFT instance.");
+        }
+    } else {
+        // Fallback or generic handling using featureExtractor as a generic cv::Feature2D
+        // This path will use the base class's compute method if the specific cast fails.
+        if (options.poolingStrategy == DOMAIN_SIZE_POOLING) {
+            descriptors = sumPooling(image, keypoints, featureExtractor, options.scales, options);
+        } else if (options.poolingStrategy == AVERAGE_POOLING) {
+            descriptors = averagePooling(image, keypoints, featureExtractor, options.scales, options);
+        } else if (options.poolingStrategy == MAX_POOLING) {
+            descriptors = maxPooling(image, keypoints, featureExtractor, options.scales, options);
+        } else {
+            featureExtractor->compute(image, keypoints, descriptors);
+        }
     }
+
+//    // Pooling strategies
+//    if (options.poolingStrategy == DOMAIN_SIZE_POOLING) {
+//        descriptors = sumPooling(image, keypoints, featureExtractor, options.scales, options);
+//    }else if (options.poolingStrategy == AVERAGE_POOLING) {
+//        descriptors = averagePooling(image, keypoints, featureExtractor, options.scales, options);
+//    } else if (options.poolingStrategy == MAX_POOLING) {
+//        descriptors = maxPooling(image, keypoints, featureExtractor, options.scales, options);
+//    } else if (options.poolingStrategy == STACKING) {
+//        descriptors = stackDescriptors(image, keypoints, featureExtractor, options.scales, options);
+//    }else {
+//        featureExtractor->compute(image, keypoints, descriptors);
+//    }
 
     // Apply normalization after pooling
     if (options.normalizationStage == AFTER_POOLING) {
@@ -94,7 +94,14 @@ cv::Mat DescriptorProcessor::sumPooling(const cv::Mat& image,
             keypoints_scaled.emplace_back(kp.pt * scale, kp.size * scale);
         }
         cv::Mat descriptors_scaled;
-        featureExtractor->compute(im_scaled, keypoints_scaled, descriptors_scaled);
+
+        if(options.descriptorType == DESCRIPTOR_vSIFT){
+            Ptr<VanillaSIFT> vanillaSiftExtractor = VanillaSIFT::create();
+            (*vanillaSiftExtractor)(im_scaled, noArray(), keypoints_scaled, noArray(), true);
+        } else {
+            featureExtractor->compute(im_scaled, keypoints_scaled, descriptors_scaled);
+        }
+
 
         if(options.normalizationStage == BEFORE_POOLING) {
             cv::normalize(descriptors_scaled, descriptors_scaled, 1, 0, options.normType);

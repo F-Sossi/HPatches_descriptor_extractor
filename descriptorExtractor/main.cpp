@@ -49,6 +49,7 @@ std::string descriptorTypeToString(DescriptorType type) {
         case DESCRIPTOR_SIFT: return "SIFT";
         case DESCRIPTOR_ORB: return "ORB";
         case DESCRIPTOR_SURF: return "SURF";
+        case DESCRIPTOR_vSIFT: return "vSIFT";
             // Add more cases as needed
         default: return "Unknown";
     }
@@ -65,14 +66,14 @@ std::string imageTypeToString(ImageType imageType) {
 
 int main() {
     // Define all possible options
-    std::vector<PoolingStrategy> poolingStrategies = {NONE, AVERAGE_POOLING, MAX_POOLING, DOMAIN_SIZE_POOLING, STACKING};
-    std::vector<NormalizationStage> normalizationStages = {NO_NORMALIZATION, BEFORE_POOLING, AFTER_POOLING};
-    std::vector<RootingStage> rootingStages = {R_NONE, R_BEFORE_POOLING}; // R_AFTER_POOLING was worse in all cases
+    std::vector<PoolingStrategy> poolingStrategies = {NONE};
+    std::vector<NormalizationStage> normalizationStages = {NO_NORMALIZATION};
+    std::vector<RootingStage> rootingStages = {R_NONE}; // R_AFTER_POOLING was worse in all cases
     std::vector<int> normTypes = {cv::NORM_L1}; // L@ Norm was worse in all cases
-    std::vector<DescriptorType> descriptorTypes = {DESCRIPTOR_SURF}; // Example descriptor types
+    std::vector<DescriptorType> descriptorTypes = {DESCRIPTOR_vSIFT}; // Example descriptor types
 
     // Data is the original data set and color_data is the same data set in color
-    std::string directoryPath = "../data";
+    std::string directoryPath = "../data2";
 
     // Iterate over all combinations of options, including descriptor types
     for (auto &descriptorType: descriptorTypes) {

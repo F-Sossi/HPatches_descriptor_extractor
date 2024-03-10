@@ -52,6 +52,17 @@
 //    imshow("Keypoints", imageWithKeypoints);
 //    waitKey(0);
 
+//     cv::Mat imageWithKeypoints;
+//     drawKeypoints(im, keypoints, imageWithKeypoints, Scalar::all(-1), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+//
+//     // Save the image to a file
+//     bool isSaved = cv::imwrite("imageWithKeypoints.png", imageWithKeypoints);
+//
+//     if(isSaved)
+//         std::cout << "Image is successfully saved." << std::endl;
+//     else
+//         std::cout << "Error saving the image." << std::endl;
+
 
 
 //     // Collect keypoints centered on each patch
@@ -77,21 +88,31 @@
 //        // For example, convert BGRA to grayscale
 //        cv::cvtColor(im, im, cv::COLOR_BGRA2GRAY);
 //    }
-//
-//    // init
-//    Ptr<VanillaSIFT> vanillaSiftExtractor = VanillaSIFT::create();
-//
-//    cv::Mat descriptors;
-//
-//    vanillaSiftExtractor->compute(im, keypoints, descriptors);
+
+    // init
+     // Usage example with custom parameters
+     Ptr<VanillaSIFT> vanillaSiftExtractor = VanillaSIFT::create(
+             1, // default features
+             1, // octave layers, consider adjusting for small patches
+             0.004, // lower contrast threshold to detect more features in low-contrast patches
+             1, // edge threshold, adjust based on your patch characteristics
+             0.12 // sigma, consider adjusting for small patch sizes
+     );
+
+    cv::Mat descriptors;
+
+    vanillaSiftExtractor->compute(im, keypoints, descriptors);
+    vanillaSiftExtractor.release();
+    vanillaSiftExtractor.reset();
+
 //    //############################################################
 
 
-    // Create the descriptor extractor based on the config
-    auto descriptorExtractor = config.createDescriptorExtractor();
-
-    // Process descriptors
-    cv::Mat descriptors = DescriptorProcessor::processDescriptors(im, keypoints, descriptorExtractor, config.descriptorOptions);
+//    // Create the descriptor extractor based on the config
+//    auto descriptorExtractor = config.createDescriptorExtractor();
+//
+//    // Process descriptors
+//    cv::Mat descriptors = DescriptorProcessor::processDescriptors(im, keypoints, descriptorExtractor, config.descriptorOptions);
 
     // No modifications needed beyond this point
     // ########################################################
@@ -123,13 +144,11 @@
         }
         if (allZero) {
             zeroCount++;
-            // print fname of the image
-            std::cout << "All zero descriptor found in " << fname << std::endl;
         }
     }
 
     if (zeroCount > 0) {
-        std::cout << "Found " << zeroCount << " all-zero descriptors.\n";
+        std::cout << "Found " << zeroCount << " all-zero descriptors in " << fname << "\n" << std::endl;
     }
 
     // Accumulate descriptorExtractor data into string stream

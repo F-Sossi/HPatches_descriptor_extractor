@@ -1,6 +1,5 @@
 #ifndef EXPERIMENT_CONFIG_HPP
 #define EXPERIMENT_CONFIG_HPP
-
 #include <utility>
 
 #include "descriptorProcessor.hpp" // Header with options structure
@@ -15,7 +14,7 @@
 struct ExperimentConfig {
     DescriptorOptions descriptorOptions;
     DescriptorType descriptorType; // Added field to store descriptor type
-    bool useMultiThreading = true; // Added field to enable multi-threading
+    bool useMultiThreading = false; // Added field to enable multi-threading
 
     // Constructor
     ExperimentConfig() : descriptorType(DESCRIPTOR_SIFT) {}

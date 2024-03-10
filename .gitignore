@@ -1,5 +1,6 @@
 # ignore the data folder
 /data
+/data2
 
 # ignore the color_data folder
 /color_data

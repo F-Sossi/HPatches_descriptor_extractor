@@ -6,7 +6,7 @@
 #include <vector>
 #include <memory>
 //#include "../keypoints/HoNC.h"
-//#include "../keypoints/VanillaSIFT.h"
+#include "../keypoints/VanillaSIFT.h"
 
 // Enum for different pooling strategies
 enum PoolingStrategy {
