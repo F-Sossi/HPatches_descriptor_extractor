@@ -42,7 +42,7 @@
     for (int r = 0; r < im.rows; r += int(PATCH_SIZE)) {
         for (int c = 0; c < im.cols; c += int(PATCH_SIZE)) {
             cv::Point2f center(c + PATCH_SIZE/2, r + PATCH_SIZE/2);
-            keypoints.emplace_back(center, PATCH_SIZE);
+            keypoints.emplace_back(center, PATCH_SIZE/2);
         }
     }
 
@@ -89,21 +89,73 @@
 //        cv::cvtColor(im, im, cv::COLOR_BGRA2GRAY);
 //    }
 
-    // init
+//     if (im.empty()) {
+//         std::cerr << "Error: Image is empty." << std::endl;
+//         return;
+//     }
+//
+//     std::cout << "Image Type: " << im.type() << std::endl;
+//     std::cout << "Image Depth: " << im.depth() << " (";
+//     switch (im.depth()) {
+//         case CV_8U: std::cout << "8-bit unsigned"; break;
+//         case CV_8S: std::cout << "8-bit signed"; break;
+//         case CV_16U: std::cout << "16-bit unsigned"; break;
+//         case CV_16S: std::cout << "16-bit signed"; break;
+//         case CV_32S: std::cout << "32-bit signed"; break;
+//         case CV_32F: std::cout << "32-bit float"; break;
+//         case CV_64F: std::cout << "64-bit float"; break;
+//         default: std::cout << "Unknown";
+//     }
+//     std::cout << ")" << std::endl;
+//     std::cout << "Number of Channels: " << im.channels() << std::endl;
+//
+//     std::cout << "Image Size: " << im.size() << " (Width x Height: " << im.cols << " x " << im.rows << ")" << std::endl;
+//
+//
+//
+//     if (im.depth() != CV_8U) {
+//         std::cerr << "Error: Image depth is not CV_8U." << std::endl;
+//         return;
+//     }
+//
+//     std::cout << "Number of Keypoints: " << keypoints.size() << std::endl;
+//
+//
+//     for (size_t i = 0; i < keypoints.size() && i < 10; ++i) { // Adjust the limit as necessary
+//         const auto& kp = keypoints[i];
+//         std::cout << "Keypoint " << i << ": Position(" << kp.pt.x << ", " << kp.pt.y << "), ";
+//         std::cout << "Scale: " << kp.size << ", Orientation: " << kp.angle << ", ";
+//         std::cout << "Response: " << kp.response << ", Octave: " << kp.octave << ", ";
+//         std::cout << "Class ID: " << kp.class_id << std::endl;
+//     }
+//
+//     for (const auto& kpt : keypoints) {
+//         if (kpt.pt.x < 0 || kpt.pt.y < 0 || kpt.pt.x >= im.cols || kpt.pt.y >= im.rows) {
+//             std::cerr << "Error: Keypoint out of bounds." << std::endl;
+//             return;
+//         }
+//     }
+
+//     if (im.channels() > 1) {
+//         cv::cvtColor(im, im, cv::COLOR_BGR2GRAY);
+//     }
+
      // Usage example with custom parameters
-     Ptr<VanillaSIFT> vanillaSiftExtractor = VanillaSIFT::create(
-             1, // default features
-             1, // octave layers, consider adjusting for small patches
-             0.004, // lower contrast threshold to detect more features in low-contrast patches
-             1, // edge threshold, adjust based on your patch characteristics
-             0.12 // sigma, consider adjusting for small patch sizes
-     );
+    Ptr<VanillaSIFT> vanillaSiftExtractor = VanillaSIFT::create();
 
     cv::Mat descriptors;
 
     vanillaSiftExtractor->compute(im, keypoints, descriptors);
-    vanillaSiftExtractor.release();
-    vanillaSiftExtractor.reset();
+//    vanillaSiftExtractor.release();
+//    vanillaSiftExtractor.reset();
+
+//    // Print the first 5 descriptors
+//    for (int i = 0; i < 5; ++i) {
+//        for (int j = 0; j < descriptors.cols; ++j) {
+//            std::cout << descriptors.at<float>(i, j) << " ";
+//        }
+//        std::cout << "\n" << std::endl;
+//    }
 
 //    //############################################################
 
@@ -129,7 +181,7 @@
      }
 
     if (nanCount > 0) {
-        std::cout << "Found " << nanCount << " NaN values in the descriptors.\n";
+       Logger::LogErr("Found " + std::to_string(nanCount) + " NaN descriptors in " + fname);
     }
 
     // Check for all zero descriptors
@@ -148,7 +200,7 @@
     }
 
     if (zeroCount > 0) {
-        std::cout << "Found " << zeroCount << " all-zero descriptors in " << fname << "\n" << std::endl;
+        Logger::LogErr("Found " + std::to_string(zeroCount) + " all-zero descriptors in " + fname);
     }
 
     // Accumulate descriptorExtractor data into string stream

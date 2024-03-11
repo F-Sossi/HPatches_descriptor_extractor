@@ -29,7 +29,9 @@ add_executable(descriptorExtractor
         descriptorExtractor/descriptorProcessor.cpp
         descriptorExtractor/experimentConfig.hpp
         keypoints/VanillaSIFT.cpp
-#        keypoints/CHoNI.cpp
+        keypoints/logger.hpp
+        keypoints/logger.cpp
+        #        keypoints/CHoNI.cpp
 #        keypoints/CSIFT.cpp
 #        keypoints/CSPIN.cpp
 #        keypoints/DSPSIFT.cpp

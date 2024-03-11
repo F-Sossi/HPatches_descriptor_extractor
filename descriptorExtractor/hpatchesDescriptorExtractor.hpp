@@ -15,7 +15,8 @@
 
 #include "descriptorProcessor.hpp"
 #include "experimentConfig.hpp"
-//#include "../keypoints/VanillaSIFT.h"
+#include "../keypoints/VanillaSIFT.h"
+#include "../keypoints/logger.hpp"
 
 /**
  * @class hpatchesDescriptorExtractor

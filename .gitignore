@@ -8,5 +8,5 @@
 # ignore the results folder
 /results
 /color_data/
-/keypoints
+
 /venv

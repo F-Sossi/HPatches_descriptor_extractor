@@ -73,7 +73,7 @@ int main() {
     std::vector<DescriptorType> descriptorTypes = {DESCRIPTOR_vSIFT}; // Example descriptor types
 
     // Data is the original data set and color_data is the same data set in color
-    std::string directoryPath = "../data2";
+    std::string directoryPath = "../data";
 
     // Iterate over all combinations of options, including descriptor types
     for (auto &descriptorType: descriptorTypes) {
