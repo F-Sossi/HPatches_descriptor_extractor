@@ -258,7 +258,7 @@ Mat VanillaSIFT::createInitialImage(const Mat& img, bool doubleImageSize, float 
 }
 
 //------------------------------------buildGaussianPyramid()---------------------------
-// compute Gaussian pyramid using base image
+// compute Gaussian pyramid using base image Checked GOOD
 //Precondition: the following parameters must be correctly defined.
 //parameters:
 //base: image base
